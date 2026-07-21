@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -34,11 +33,11 @@ const TABS: {
 
 const INDICATOR_SIZE = 44;
 const BAR_HEIGHT = 60;
-const INDICATOR_TOP = (BAR_HEIGHT - INDICATOR_SIZE) / 2;
+const INDICATOR_TOP = 6;
 
 type TabLayout = { x: number; width: number };
 
-export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
+export function CustomTabBar({ state, navigation }: any) {
   const insets = useSafeAreaInsets();
   const indicatorX = useRef(new Animated.Value(0)).current;
   // Real measured position/width per tab — matches whatever pixel
@@ -84,7 +83,7 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           />
         )}
 
-        {state.routes.map((route, index) => {
+        {state.routes.map((route: any, index: any) => {
           const tab = TABS[index] ?? {
             icon: "ellipse-outline",
             activeIcon: "ellipse",
@@ -130,14 +129,14 @@ function TabItem({
   onPress: () => void;
   onLayout: (e: LayoutChangeEvent) => void;
 }) {
-  const iconTranslateY = useRef(new Animated.Value(isActive ? 8 : 0)).current;
+  const iconTranslateY = useRef(new Animated.Value(isActive ? 6 : 0)).current;
   const iconScale = useRef(new Animated.Value(isActive ? 1.1 : 1)).current;
   const labelOpacity = useRef(new Animated.Value(isActive ? 0 : 1)).current;
 
   useEffect(() => {
     Animated.parallel([
       Animated.spring(iconTranslateY, {
-        toValue: isActive ? 8 : 0,
+        toValue: isActive ? 6 : 0,
         useNativeDriver: true,
         damping: 15,
         stiffness: 200,
