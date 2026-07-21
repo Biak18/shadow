@@ -1,11 +1,5 @@
 import { useEffect } from "react";
-import {
-  ActivityIndicator,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -16,6 +10,7 @@ import Animated, {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ProjectCard } from "@/components/ProjectCard";
+import { SkeletonList } from "@/components/SkeletonCard";
 import { useProjectsStore } from "@/stores/useProjectsStore";
 import { border, colors, spacing, typography } from "@/theme/theme";
 
@@ -85,10 +80,12 @@ export default function HomeScreen() {
 
   const topBarHeight = insets.top + TOP_BAR_HEIGHT;
 
-  if (loading) {
+  if (loading || refreshing) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator color={colors.primary} />
+      <View style={styles.root}>
+        <View style={{ paddingTop: topBarHeight + spacing.xs }}>
+          <SkeletonList count={3} />
+        </View>
       </View>
     );
   }
@@ -105,7 +102,6 @@ export default function HomeScreen() {
   return (
     <View style={styles.root}>
       <Animated.FlatList
-        showsVerticalScrollIndicator={false}
         data={projects}
         keyExtractor={(item: { id: string }) => item.id}
         renderItem={({ item }: { item: any }) => <ProjectCard project={item} />}
@@ -113,7 +109,7 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
         contentContainerStyle={[
           styles.listContent,
-          { paddingTop: topBarHeight + spacing.xs },
+          { paddingTop: topBarHeight },
         ]}
         ItemSeparatorComponent={() => <View style={{ height: spacing.md }} />}
         refreshControl={
