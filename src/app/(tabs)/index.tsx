@@ -80,7 +80,7 @@ export default function HomeScreen() {
 
   const topBarHeight = insets.top + TOP_BAR_HEIGHT;
 
-  if (loading || refreshing) {
+  if (loading && projects.length === 0) {
     return (
       <View style={styles.root}>
         <View style={{ paddingTop: topBarHeight + spacing.xs }}>
@@ -102,6 +102,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.root}>
       <Animated.FlatList
+        showsVerticalScrollIndicator={false}
         data={projects}
         keyExtractor={(item: { id: string }) => item.id}
         renderItem={({ item }: { item: any }) => <ProjectCard project={item} />}

@@ -60,7 +60,9 @@ export function ShadowButton({
 
   const handleLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
-    setButtonSize({ width, height });
+    if (!loading) {
+      setButtonSize({ width, height });
+    }
   };
 
   const handlePressIn = () => {
@@ -80,11 +82,14 @@ export function ShadowButton({
   };
 
   const variantStyle = variantStyles[variant];
-  const showShadow = variant !== "ghost" && buttonSize.width > 0;
+
+  // Hide shadow when disabled or loading
+  const showShadow =
+    variant !== "ghost" && buttonSize.width > 0 && !disabled && !loading;
 
   return (
     <View style={[styles.wrapper, style]}>
-      {/* Shadow — explicitly sized to match the button, not inferred from insets */}
+      {/* Shadow */}
       {showShadow && (
         <View
           style={[
@@ -115,6 +120,13 @@ export function ShadowButton({
           variantStyle.container,
           animatedStyle,
           (disabled || loading) && styles.disabled,
+          loading &&
+            buttonSize.width > 0 && {
+              width: buttonSize.width,
+              height: buttonSize.height,
+              paddingHorizontal: 0,
+              paddingVertical: 0,
+            },
         ]}
       >
         {loading ? (

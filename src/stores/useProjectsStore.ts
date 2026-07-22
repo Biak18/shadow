@@ -9,6 +9,7 @@ export type Project = {
   tech_stack: string[] | null;
   github_url: string | null;
   live_url: string | null;
+  cover_image_url: string | null; // ← add this
   created_at: string;
 };
 

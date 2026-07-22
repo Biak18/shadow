@@ -17,7 +17,8 @@
         "backgroundImage": "./assets/images/background.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.biakthanceu.portfolio"
+      "package": "com.biakthanceu.portfolio",
+      "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
       "output": "static",

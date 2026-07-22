@@ -33,7 +33,7 @@ const TABS: {
 
 const INDICATOR_SIZE = 44;
 const BAR_HEIGHT = 60;
-const INDICATOR_TOP = 6;
+const INDICATOR_TOP = (BAR_HEIGHT - INDICATOR_SIZE) / 2;
 
 type TabLayout = { x: number; width: number };
 
@@ -129,14 +129,14 @@ function TabItem({
   onPress: () => void;
   onLayout: (e: LayoutChangeEvent) => void;
 }) {
-  const iconTranslateY = useRef(new Animated.Value(isActive ? 6 : 0)).current;
+  const iconTranslateY = useRef(new Animated.Value(isActive ? 8 : 0)).current;
   const iconScale = useRef(new Animated.Value(isActive ? 1.1 : 1)).current;
   const labelOpacity = useRef(new Animated.Value(isActive ? 0 : 1)).current;
 
   useEffect(() => {
     Animated.parallel([
       Animated.spring(iconTranslateY, {
-        toValue: isActive ? 6 : 0,
+        toValue: isActive ? 8 : 0,
         useNativeDriver: true,
         damping: 15,
         stiffness: 200,
