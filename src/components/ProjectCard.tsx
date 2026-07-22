@@ -1,6 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,9 +15,11 @@ import Animated, {
 } from "react-native-reanimated";
 
 import type { Project } from "@/stores/useProjectsStore";
-import { colors, spacing, typography } from "@/theme/theme";
+import { border, colors, radius, spacing, typography } from "@/theme/theme";
 import { ShadowCard } from "./ShadowCard";
 import { ShadowChip } from "./ShadowChip";
+
+const CARD_PADDING = spacing.md;
 
 export function ProjectCard({ project }: { project: Project }) {
   const [expanded, setExpanded] = useState(false);
@@ -21,13 +30,16 @@ export function ProjectCard({ project }: { project: Project }) {
   const toggle = () => {
     const next = !expanded;
     setExpanded(next);
-    progress.value = withTiming(next ? 1 : 0, { duration: 240 });
+    progress.value = withTiming(next ? 1 : 0, { duration: 220 });
   };
 
-  const detailsStyle = useAnimatedStyle(() => ({
-    height: progress.value * contentHeight,
-    opacity: progress.value,
-  }));
+  const detailsStyle = useAnimatedStyle(
+    () => ({
+      height: progress.value * contentHeight,
+      opacity: progress.value,
+    }),
+    [contentHeight],
+  );
 
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${progress.value * 180}deg` }],
@@ -37,6 +49,14 @@ export function ProjectCard({ project }: { project: Project }) {
 
   return (
     <ShadowCard level={expanded ? "level2" : "level1"} style={styles.card}>
+      {!!project.cover_image_url && (
+        <Image
+          source={{ uri: project.cover_image_url }}
+          style={styles.cover}
+          resizeMode="cover"
+        />
+      )}
+
       <Pressable onPress={toggle} style={styles.header}>
         <Text style={styles.title} numberOfLines={2}>
           {project.title}
@@ -57,58 +77,83 @@ export function ProjectCard({ project }: { project: Project }) {
           ))}
         </View>
       )}
+      <View
+        style={styles.measureCopy}
+        pointerEvents="none"
+        onLayout={(e) => setContentHeight(e.nativeEvent.layout.height)}
+      >
+        <DetailsContent project={project} hasLinks={hasLinks} />
+      </View>
 
-      {/* Always mounted so its natural height can be measured via onLayout;
-          the outer Animated.View clips it to 0 when collapsed. */}
+      {/* Visible, animated copy — purely presentational now. */}
       <Animated.View style={[styles.detailsWrapper, detailsStyle]}>
-        <View
-          onLayout={(e) => setContentHeight(e.nativeEvent.layout.height)}
-          style={styles.details}
-        >
-          {!!project.description && (
-            <Text style={styles.description}>{project.description}</Text>
-          )}
-
-          {hasLinks && (
-            <View style={styles.linkRow}>
-              {project.github_url && (
-                <Pressable
-                  style={styles.linkButton}
-                  onPress={() => Linking.openURL(project.github_url!)}
-                >
-                  <Ionicons
-                    name="logo-github"
-                    size={16}
-                    color={colors.onBackground}
-                  />
-                  <Text style={styles.linkText}>Code</Text>
-                </Pressable>
-              )}
-              {project.live_url && (
-                <Pressable
-                  style={styles.linkButton}
-                  onPress={() => Linking.openURL(project.live_url!)}
-                >
-                  <Ionicons
-                    name="open-outline"
-                    size={16}
-                    color={colors.onBackground}
-                  />
-                  <Text style={styles.linkText}>Live</Text>
-                </Pressable>
-              )}
-            </View>
-          )}
-        </View>
+        <DetailsContent project={project} hasLinks={hasLinks} />
       </Animated.View>
     </ShadowCard>
   );
 }
 
+function DetailsContent({
+  project,
+  hasLinks,
+}: {
+  project: Project;
+  hasLinks: string | null | undefined;
+}) {
+  return (
+    <View style={styles.details}>
+      {!!project.description && (
+        <Text style={styles.description}>{project.description}</Text>
+      )}
+
+      {hasLinks && (
+        <View style={styles.linkRow}>
+          {project.github_url && (
+            <Pressable
+              style={styles.linkButton}
+              onPress={() => Linking.openURL(project.github_url!)}
+            >
+              <Ionicons
+                name="logo-github"
+                size={16}
+                color={colors.onBackground}
+              />
+              <Text style={styles.linkText}>Code</Text>
+            </Pressable>
+          )}
+          {project.live_url && (
+            <Pressable
+              style={styles.linkButton}
+              onPress={() => Linking.openURL(project.live_url!)}
+            >
+              <Ionicons
+                name="open-outline"
+                size={16}
+                color={colors.onBackground}
+              />
+              <Text style={styles.linkText}>Live</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   card: {
-    padding: spacing.md,
+    padding: CARD_PADDING,
     gap: spacing.sm,
+  },
+  cover: {
+    height: 160,
+    alignSelf: "stretch",
+    marginTop: -CARD_PADDING,
+    marginHorizontal: -CARD_PADDING,
+    marginBottom: spacing.xs,
+    borderTopLeftRadius: radius.xl - border.width,
+    borderTopRightRadius: radius.xl - border.width,
+    backgroundColor: colors.surfaceContainerHigh,
   },
   header: {
     flexDirection: "row",
@@ -126,6 +171,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.xs,
+  },
+  measureCopy: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    opacity: 0,
+    zIndex: -1,
   },
   detailsWrapper: {
     overflow: "hidden",

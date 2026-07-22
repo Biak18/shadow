@@ -4,6 +4,7 @@ import {
   Dimensions,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -22,12 +23,33 @@ import {
   ShadowInput,
 } from "@/components";
 import { colors, radius, spacing, typography } from "@/theme/theme";
+import { useKeyboardHandler } from "react-native-keyboard-controller";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const SLIDE_COUNT = 3;
+const PADDING_BOTTOM = Platform.OS === "ios" ? 20 : 0;
+const useGradualAnimation = () => {
+  const height = useSharedValue(PADDING_BOTTOM);
+
+  useKeyboardHandler(
+    {
+      onMove: (e) => {
+        "worklet";
+        height.value = Math.max(e.height, PADDING_BOTTOM);
+      },
+      onEnd: (e) => {
+        "worklet";
+        height.value = e.height;
+      },
+    },
+    [],
+  );
+  return { height };
+};
 
 export default function OnboardingScreen() {
+  const { height } = useGradualAnimation();
   const scrollRef = useRef<ScrollView>(null);
   const [index, setIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
@@ -45,6 +67,12 @@ export default function OnboardingScreen() {
   const finish = () => {
     router.replace("/(tabs)");
   };
+
+  const fakeView = useAnimatedStyle(() => {
+    return {
+      height: Math.max(height.value, 0),
+    };
+  }, []);
 
   return (
     <View style={styles.root}>
@@ -122,6 +150,7 @@ export default function OnboardingScreen() {
               style={styles.enterButton}
               onPress={finish}
             />
+            <Animated.View style={fakeView} />
           </View>
         </View>
       </ScrollView>
