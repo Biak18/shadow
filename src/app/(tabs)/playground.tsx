@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { OptionSelector } from "@/components/OptionSelector";
 import { ShadowButton } from "@/components/ShadowButton";
@@ -69,7 +66,7 @@ export default function PlaygroundScreen() {
 
   return (
     /* Exclude bottom edge so SafeAreaView doesn't double-pad */
-    <SafeAreaView style={styles.root} edges={["top", "left", "right"]}>
+    <View style={styles.root}>
       <ScrollView
         contentContainerStyle={[
           styles.content,
@@ -168,7 +165,7 @@ export default function PlaygroundScreen() {
         </Section>
       </ScrollView>
       <Animated.View style={fakeView} />
-    </SafeAreaView>
+    </View>
   );
 }
 

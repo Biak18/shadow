@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Linking,
   Platform,
@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { SocialButton } from "@/components";
 import { ShadowButton } from "@/components/ShadowButton";
 import { ShadowInput } from "@/components/ShadowInput";
 import { colors, spacing, typography } from "@/theme/theme";
@@ -51,9 +52,37 @@ type FormErrors = Partial<Record<keyof FormState, string>>;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const SOCIAL_LINKS = [
+  {
+    name: "LinkedIn",
+    url: "https://www.linkedin.com/in/chan-0b65b926a",
+    iconName: "logo-linkedin",
+    color: "#0A66C2",
+  },
+  {
+    name: "GitHub",
+    url: "https://github.com/Biak18",
+    iconName: "logo-github",
+    color: "#181717",
+  },
+  {
+    name: "Telegram",
+    url: "https://t.me/BiakThanCeu",
+    iconName: "paper-plane",
+    color: "#26A5E4",
+  },
+  {
+    name: "Facebook",
+    url: "https://www.facebook.com/share/18t8B3cnKU",
+    iconName: "logo-facebook",
+    color: "#1877F2",
+  },
+] as const;
+
 export default function ContactScreen() {
   const insets = useSafeAreaInsets();
   const { height } = useGradualAnimation();
+  const scrollRef = useRef<ScrollView>(null);
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
@@ -142,6 +171,8 @@ export default function ContactScreen() {
   return (
     <View style={styles.root}>
       <ScrollView
+        ref={scrollRef}
+        style={styles.scroll}
         contentContainerStyle={[
           styles.content,
           { paddingTop: insets.top + spacing.lg },
@@ -190,6 +221,21 @@ export default function ContactScreen() {
           onPress={handleSubmit}
           loading={status === "sending"}
         />
+
+        <View style={styles.socialSection}>
+          <Text style={styles.socialTitle}>Find me online</Text>
+
+          <View style={styles.socialList}>
+            {SOCIAL_LINKS.map((item) => (
+              <SocialButton
+                key={item.name}
+                url={item.url}
+                iconName={item.iconName}
+                brandColor={item.color}
+              />
+            ))}
+          </View>
+        </View>
       </ScrollView>
       <Animated.View style={fakeView} />
     </View>
@@ -200,6 +246,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  scroll: {
+    flex: 1,
   },
   content: {
     paddingHorizontal: spacing.lg,
@@ -242,5 +291,22 @@ const styles = StyleSheet.create({
     color: colors.onSurfaceVariant,
     textAlign: "center",
     marginBottom: spacing.md,
+  },
+  socialSection: {
+    gap: spacing.md,
+    marginTop: spacing.xl,
+  },
+
+  socialTitle: {
+    fontFamily: typography.headlineMd.fontFamily,
+    fontSize: typography.headlineMd.fontSize,
+    color: colors.onBackground,
+  },
+
+  socialList: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
 });

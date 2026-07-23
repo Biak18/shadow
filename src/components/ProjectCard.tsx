@@ -16,6 +16,7 @@ import Animated, {
 
 import type { Project } from "@/stores/useProjectsStore";
 import { border, colors, radius, spacing, typography } from "@/theme/theme";
+import { ImageViewer } from "./ImageViewer";
 import { ShadowCard } from "./ShadowCard";
 import { ShadowChip } from "./ShadowChip";
 
@@ -47,14 +48,23 @@ export function ProjectCard({ project }: { project: Project }) {
 
   const hasLinks = project.github_url || project.live_url;
 
+  // ── Image viewer ──
+  const [viewerVisible, setViewerVisible] = useState(false);
+
+  const openViewer = () => {
+    setViewerVisible(true);
+  };
+
   return (
     <ShadowCard level={expanded ? "level2" : "level1"} style={styles.card}>
       {!!project.cover_image_url && (
-        <Image
-          source={{ uri: project.cover_image_url }}
-          style={styles.cover}
-          resizeMode="cover"
-        />
+        <Pressable onPress={openViewer}>
+          <Image
+            source={{ uri: project.cover_image_url }}
+            style={styles.cover}
+            resizeMode="cover"
+          />
+        </Pressable>
       )}
 
       <Pressable onPress={toggle} style={styles.header}>
@@ -77,6 +87,7 @@ export function ProjectCard({ project }: { project: Project }) {
           ))}
         </View>
       )}
+
       <View
         style={styles.measureCopy}
         pointerEvents="none"
@@ -85,10 +96,15 @@ export function ProjectCard({ project }: { project: Project }) {
         <DetailsContent project={project} hasLinks={hasLinks} />
       </View>
 
-      {/* Visible, animated copy — purely presentational now. */}
       <Animated.View style={[styles.detailsWrapper, detailsStyle]}>
         <DetailsContent project={project} hasLinks={hasLinks} />
       </Animated.View>
+
+      <ImageViewer
+        visible={viewerVisible}
+        uri={project.cover_image_url}
+        onClose={() => setViewerVisible(false)}
+      />
     </ShadowCard>
   );
 }

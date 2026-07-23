@@ -14,23 +14,28 @@ import { ShadowCard } from "@/components/ShadowCard";
 import { ShadowChip } from "@/components/ShadowChip";
 import { border, colors, radius, spacing, typography } from "@/theme/theme";
 
-// ── Edit this block with your real info ──
 const PROFILE = {
   name: "Chan Toe Whan",
-  role: "Full Stack Developer",
-  bio: "I build tactile, animation-forward mobile apps — mostly React Native and Expo, with a habit of caring more about how something feels to touch than how it looks in a screenshot.",
-  now: "Currently building out a shadow-based design system and learning more about native performance tuning on the New Architecture.",
+
+  role: "Software Developer",
+
+  bio: "I build modern mobile applications with React Native and Expo, focusing on clean architecture, smooth interactions, and polished user experiences. I enjoy turning ideas into reliable products while continuously improving performance, design, and development workflows.",
+
+  now: "Currently building cross-platform mobile applications with React Native, Expo, and Supabase while exploring native performance optimization and modern mobile architecture.",
+
   skills: [
     "React Native",
-    "TypeScript",
-    "Reanimated",
-    "Zustand",
     "Expo",
+    "TypeScript",
     "Supabase",
+    "PostgreSQL",
+    "React Native Reanimated",
+    "Zustand",
     "Node.js",
   ],
+
   resumeUrl:
-    "https://drive.google.com/file/d/1Lbfzm3EQ58wVSXYUHd-_oPHxiSGaQc9u/view?usp=drivesdk",
+    "https://drive.google.com/file/d/1D0JAUehLQLB9zTDrkeU_oKQ4DYRyfu5S/view?usp=drivesdk",
 };
 // ──────────────────────────────────────────
 

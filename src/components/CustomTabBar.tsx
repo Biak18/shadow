@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useHideOnKeyboard } from "@/hooks/useHideOnKeyboard";
 import {
   border,
   colors,
@@ -43,7 +44,7 @@ export function CustomTabBar({ state, navigation }: any) {
   // Real measured position/width per tab — matches whatever pixel
   // rounding Yoga actually applied, instead of a divided estimate.
   const [tabLayouts, setTabLayouts] = useState<Record<number, TabLayout>>({});
-
+  const { isKeyboardVisible } = useHideOnKeyboard();
   const activeIndex = state.index;
   const activeLayout = tabLayouts[activeIndex];
 
@@ -65,12 +66,15 @@ export function CustomTabBar({ state, navigation }: any) {
     const { x, width } = e.nativeEvent.layout;
     setTabLayouts((prev) => ({ ...prev, [index]: { x, width } }));
   };
+  if (isKeyboardVisible) return null;
 
   return (
     <View
       style={[
         styles.wrapper,
-        { paddingBottom: Math.max(insets.bottom, spacing.lg) },
+        {
+          paddingBottom: Math.max(insets.bottom, spacing.lg),
+        },
       ]}
     >
       <View style={styles.bar}>
@@ -129,14 +133,14 @@ function TabItem({
   onPress: () => void;
   onLayout: (e: LayoutChangeEvent) => void;
 }) {
-  const iconTranslateY = useRef(new Animated.Value(isActive ? 8 : 0)).current;
+  const iconTranslateY = useRef(new Animated.Value(isActive ? 9 : 0)).current;
   const iconScale = useRef(new Animated.Value(isActive ? 1.1 : 1)).current;
   const labelOpacity = useRef(new Animated.Value(isActive ? 0 : 1)).current;
 
   useEffect(() => {
     Animated.parallel([
       Animated.spring(iconTranslateY, {
-        toValue: isActive ? 8 : 0,
+        toValue: isActive ? 9 : 0,
         useNativeDriver: true,
         damping: 15,
         stiffness: 200,
