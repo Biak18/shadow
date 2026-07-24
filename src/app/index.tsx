@@ -83,6 +83,7 @@ export default function OnboardingScreen() {
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
+        keyboardDismissMode="on-drag"
       >
         {/* Slide 1 — Press it */}
         <View style={[styles.slide, { width: SCREEN_WIDTH }]}>
